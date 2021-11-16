@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Bylines.LandingPage.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bylines.LandingPage
 {
@@ -29,6 +30,7 @@ namespace Bylines.LandingPage
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
+            services.AddDbContext<WaitlistDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WaitlistDb")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
