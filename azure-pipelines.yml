@@ -1,0 +1,47 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - '*'
+    exclude:
+      - 'azure-pipelines.yml'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - name: AWS_ACCOUNT_ID
+    value: 1234567789927
+  - name: APP_NAME
+    value: dummy
+  - name: DOCKERFILE_PATH
+    value: Dummy.WebApi/Dockerfile
+  - name: AWS_REGION
+    value : eu-west-1
+  - name: TAG
+    value: $(Build.BuildId)
+
+stages:
+  - stage: 'BuildAndPushToECR'
+    jobs:
+      - job: 'Build'
+        steps:
+          - script: |
+              echo Starting docker build
+              echo docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
+              docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
+            displayName: 'Run docker build'
+
+      - task: ECRPushImage@1
+          displayName:  Push image to Dev ECR
+          inputs:
+            awsCredentials: 'AWS ECR Dev'
+            regionName: '$(AWS_REGION)'
+            imageSource: 'imagename'
+            sourceImageName: '$(APP_NAME)'
+            sourceImageTag: '$(TAG)'
+            repositoryName: '$(APP_NAME)'
+            pushTag: '$(TAG)'
+
