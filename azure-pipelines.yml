@@ -1,47 +1,37 @@
 trigger:
   branches:
     include:
-      - main
-  paths:
-    include:
-      - '*'
-    exclude:
-      - 'azure-pipelines.yml'
-
-pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  - name: AWS_ACCOUNT_ID
-    value: 1234567789927
-  - name: APP_NAME
-    value: dummy
-  - name: DOCKERFILE_PATH
-    value: Dummy.WebApi/Dockerfile
-  - name: AWS_REGION
-    value : eu-west-1
-  - name: TAG
-    value: $(Build.BuildId)
-
-stages:
-  - stage: 'BuildAndPushToECR'
-    jobs:
-      - job: 'Build'
-        steps:
-          - script: |
-              echo Starting docker build
-              echo docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
-              docker build -t $(APP_NAME):$(TAG) -f $(System.DefaultWorkingDirectory)/$(DOCKERFILE_PATH) .
-            displayName: 'Run docker build'
-
+      - refs/heads/main
+  batch: True
+name: $(date:yyyyMMdd)$(rev:.r)
+jobs:
+  - job: Job_1
+    displayName: Agent job 1
+    pool:
+      vmImage: ubuntu-18.04
+    steps:
+      - checkout: self
+      - task: Docker@0
+        displayName: Build Container
+        inputs:
+          containerregistrytype: Container Registry
+          imageName: landing-page-$(Build.SourceVersion)-$(Build.BuildId)
+          additionalImageTags: $(Build.SourceVersion)-$(Build.BuildId)
+          includeSourceTags: true
+          includeLatestTag: true
       - task: ECRPushImage@1
-          displayName:  Push image to Dev ECR
-          inputs:
-            awsCredentials: 'AWS ECR Dev'
-            regionName: '$(AWS_REGION)'
-            imageSource: 'imagename'
-            sourceImageName: '$(APP_NAME)'
-            sourceImageTag: '$(TAG)'
-            repositoryName: '$(APP_NAME)'
-            pushTag: '$(TAG)'
-
+        displayName: Push Image to ECR
+        inputs:
+          awsCredentials: 63e72a12-b8c8-4c47-92fd-1d7d3108e349
+          regionName: us-east-1
+          sourceImageName: landing-page-$(Build.SourceVersion)-$(Build.BuildId)
+          repositoryName: bylines/landing-page
+      - task: AWSCLI@1
+        displayName: Update ECS Service
+        inputs:
+          awsCredentials: 63e72a12-b8c8-4c47-92fd-1d7d3108e349
+          regionName: us-east-1
+          awsCommand: ecs
+          awsSubCommand: update-service
+          awsArguments: --cluster bylines-landing-page --service bylines-landing-page --force-new-deployment
+          failOnStandardError: false
