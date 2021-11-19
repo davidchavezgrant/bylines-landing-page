@@ -20,6 +20,10 @@
         var success = await db.SaveChangesAsync();
 
         if (success is not 1) statusMessage = "Failure!";
-        if (success is 1) statusMessage = "Success!";
+        if (success is 1)
+        {
+            statusMessage = "Success!";
+            this.form = new();
+        }
     }
 }
