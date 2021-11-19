@@ -30,7 +30,7 @@ namespace Bylines.LandingPage
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddDbContext<WaitlistDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WaitlistDb")));
+            services.AddDbContext<WaitlistDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("WaitlistDb-AWS")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

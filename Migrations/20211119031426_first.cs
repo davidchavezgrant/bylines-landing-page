@@ -8,9 +8,6 @@ namespace Bylines.LandingPage.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("SqlServer:EditionOptions", "EDITION = 'Basic'");
-
             migrationBuilder.CreateTable(
                 name: "WaitlistSubmissions",
                 columns: table => new

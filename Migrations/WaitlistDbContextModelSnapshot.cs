@@ -20,7 +20,6 @@ namespace Bylines.LandingPage.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-            SqlServerModelBuilderExtensions.HasServiceTierSql(modelBuilder, "'Basic'");
 
             modelBuilder.Entity("Bylines.LandingPage.Data.WaitlistSubmissionData", b =>
                 {

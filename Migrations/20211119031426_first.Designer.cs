@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bylines.LandingPage.Migrations
 {
     [DbContext(typeof(WaitlistDbContext))]
-    [Migration("20211116212835_first")]
+    [Migration("20211119031426_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,6 @@ namespace Bylines.LandingPage.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-            SqlServerModelBuilderExtensions.HasServiceTierSql(modelBuilder, "'Basic'");
 
             modelBuilder.Entity("Bylines.LandingPage.Data.WaitlistSubmissionData", b =>
                 {

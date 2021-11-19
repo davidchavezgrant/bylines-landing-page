@@ -11,7 +11,7 @@ namespace Bylines.LandingPage.Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-			modelBuilder.HasServiceTier("Basic");
+			//modelBuilder.HasServiceTier("Basic");
 		}
 	}
 }
