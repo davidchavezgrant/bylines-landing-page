@@ -1,0 +1,23 @@
+@using Bylines.LandingPage.Data
+@inject WaitlistDbContext db;
+<h3>SignUpForm</h3>
+
+<input placeholder="Email Address"/>
+<input placeholder="Name"/>
+<input placeholder="Phone Number"/>
+<input type="checkbox"/>
+
+
+@code
+{
+    WaitlistSubmissionData form = new();
+    string statusMessage = "";
+    async Task Submit()
+    {
+        db.WaitlistSubmissions.Add(this.form);
+        var success = await db.SaveChangesAsync();
+
+        if (success is not 1) statusMessage = "Failure!";
+        if (success is 1) statusMessage = "Success!";
+    }
+}

@@ -7,7 +7,7 @@ namespace Bylines.LandingPage.Data
 		public WaitlistDbContext(DbContextOptions<WaitlistDbContext> options) : base(options)
 		{
 		}
-		DbSet<WaitlistSubmissionData> WaitlistSubmissions { get; set; }
+		public DbSet<WaitlistSubmissionData> WaitlistSubmissions { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
