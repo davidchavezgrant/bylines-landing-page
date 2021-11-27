@@ -23,7 +23,8 @@
         {
             statusMessage = result.Errors?.FirstOrDefault()?.ErrorMessage ?? "An unknown error occured";
         }
-        if (result.IsValid)
+        var isDuplicate = db.WaitlistSubmissions.Any(d => d.Email == form.Email) || db.WaitlistSubmissions.Any(d => d.PhoneNumber == form.PhoneNumber);
+        if (result.IsValid && !isDuplicate)
         {
             db.WaitlistSubmissions.Add(form);
             var success = await db.SaveChangesAsync();
