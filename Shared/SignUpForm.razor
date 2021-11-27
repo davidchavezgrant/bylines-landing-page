@@ -2,8 +2,8 @@
 @inject WaitlistDbContext db;
 <h3>SignUpForm</h3>
 
-<input placeholder="Email Address" @bind="form.Email"/>
 <input placeholder="Name" @bind="form.Name"/>
+<input placeholder="Email Address" @bind="form.Email"/>
 <input placeholder="Phone Number" @bind="form.PhoneNumber"/>
 <input type="checkbox" @bind="form.IsGroup"/>
 <button @onclick="Submit">Submit</button>
