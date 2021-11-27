@@ -1,39 +1,48 @@
 @using Bylines.LandingPage.Data
 @inject WaitlistDbContext db;
-<h3>SignUpForm</h3>
+<h3>Join the Bylines Waitlist</h3>
 
 <input placeholder="Name" @bind="form.Name"/>
 <input placeholder="Email Address" @bind="form.Email"/>
 <input placeholder="Phone Number" @bind="form.PhoneNumber"/>
 <input type="checkbox" @bind="form.IsGroup"/>
 <button @onclick="Submit">Submit</button>
-<h3>@statusMessage</h3>
-<h3>Id: @form.Id</h3>
+<h3 style="color: @statusColor">@statusMessage</h3>
 
 @code
 {
     WaitlistSubmissionData form = new();
+    WaitlistDataValidator validator = new();
     string statusMessage = "";
-
+    string statusColor = "red";
+    bool IsValid => validator.Validate(this.form).IsValid;
+    bool AlreadyExists => db.WaitlistSubmissions.Any(d => d.Email == form.Email) || db.WaitlistSubmissions.Any(d => d.PhoneNumber == form.PhoneNumber);
     async Task Submit()
     {
-        var validator = new WaitlistDataValidator();
-        var result = validator.Validate(form);
-        if (!result.IsValid)
+        if (!this.IsValid)
         {
-            statusMessage = result.Errors?.FirstOrDefault()?.ErrorMessage ?? "An unknown error occured";
+            statusColor = "red";
+            statusMessage = validator.Validate(this.form).Errors?.FirstOrDefault()?.ErrorMessage ?? "An unknown error occured";
         }
-        var isDuplicate = db.WaitlistSubmissions.Any(d => d.Email == form.Email) || db.WaitlistSubmissions.Any(d => d.PhoneNumber == form.PhoneNumber);
-        if (result.IsValid && !isDuplicate)
+        if (this.AlreadyExists)
+        {
+           ShowSuccess();
+        }
+        if (this.IsValid && !this.AlreadyExists)
         {
             db.WaitlistSubmissions.Add(form);
             var success = await db.SaveChangesAsync();
-            if (success is not 1) statusMessage = "Failed to save to database!";
+            if (success is not 1) statusMessage = "Failed to save!";
             if (success is 1)
             {
-                statusMessage = "Success!";
-                form = new WaitlistSubmissionData();
+               ShowSuccess();
             }
         }
+    }
+    void ShowSuccess()
+    {
+        statusColor = "green";
+        statusMessage = "Success!";
+        form = new WaitlistSubmissionData();
     }
 }
