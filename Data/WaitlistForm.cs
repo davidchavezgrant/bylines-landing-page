@@ -4,9 +4,9 @@ using FluentValidation.Results;
 
 namespace Bylines.LandingPage.Data;
 
-public record WaitlistSubmissionData
+public record WaitlistForm
 {
-	WaitlistDataValidator _validator = new();
+	WaitlistFormValidator _validator = new();
 	public int            Id          { get; set; }
 	public string         Name        { get; set; }
 	public string         Email       { get; set; }

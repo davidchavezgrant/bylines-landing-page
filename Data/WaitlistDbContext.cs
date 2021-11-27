@@ -3,7 +3,7 @@ namespace Bylines.LandingPage.Data;
 public class WaitlistDbContext : DbContext
 {
 	public WaitlistDbContext(DbContextOptions<WaitlistDbContext> options) : base(options) { }
-	public DbSet<WaitlistSubmissionData> WaitlistSubmissions { get; set; }
+	public DbSet<WaitlistForm> WaitlistSubmissions { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

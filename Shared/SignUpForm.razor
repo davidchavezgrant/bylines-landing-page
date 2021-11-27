@@ -11,36 +11,43 @@
 
 @code
 {
-    WaitlistSubmissionData form = new();
+    WaitlistForm form = new();
     string statusMessage = "";
     string statusColor = "red";
     bool AlreadyExists => db.WaitlistSubmissions.Any(d => d.Email == form.Email) || db.WaitlistSubmissions.Any(d => d.PhoneNumber == form.PhoneNumber);
-    async Task Submit()
+
+    Task Submit()
     {
-        if (!this.form.IsValid)
+        if (!form.IsValid)
         {
             statusColor = "red";
-            statusMessage = this.form.Error ?? "An unknown error occured";
+            statusMessage = form.Error ?? "An unknown error occured";
+            return Task.CompletedTask;
         }
-        if (this.AlreadyExists)
+        if (AlreadyExists)
         {
-           ShowSuccess();
+            ShowSuccess();
+            return Task.CompletedTask;
         }
-        if (this.form.IsValid && !this.AlreadyExists)
+        if (form.IsValid && !AlreadyExists)
         {
-            db.WaitlistSubmissions.Add(form);
-            var success = await db.SaveChangesAsync();
-            if (success is not 1) statusMessage = "Failed to save!";
-            if (success is 1)
-            {
-               ShowSuccess();
-            }
+            return UpdateDatabase();
         }
+        return Task.CompletedTask;
     }
+
     void ShowSuccess()
     {
         statusColor = "green";
         statusMessage = "Success!";
-        form = new WaitlistSubmissionData();
+        form = new WaitlistForm();
+    }
+
+    async Task UpdateDatabase()
+    {
+        db.WaitlistSubmissions.Add(form);
+        var success = await db.SaveChangesAsync();
+        if (success is 1) ShowSuccess();
+        if (success is not 1) statusMessage = "Failed to save!";
     }
 }

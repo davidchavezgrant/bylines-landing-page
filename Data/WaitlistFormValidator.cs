@@ -1,24 +1,22 @@
-using System;
 using System.Linq;
 using FluentValidation;
+
 namespace Bylines.LandingPage.Data;
 
-sealed class WaitlistDataValidator : AbstractValidator<WaitlistSubmissionData>
+sealed class WaitlistFormValidator : AbstractValidator<WaitlistForm>
 {
-	public WaitlistDataValidator()
+	public WaitlistFormValidator()
 	{
 		RuleFor(d => d.Name)
 		   .Cascade(CascadeMode.Stop)
 		   .NotEmpty().WithMessage("Please enter your name")
 		   .Must(BeAValidName).WithMessage("Invalid Name");
-
 		RuleFor(d => d.Email)
 		   .Cascade(CascadeMode.Stop)
 		   .NotEmpty().WithMessage("Please enter your email")
 		   .EmailAddress().WithMessage("Not a valid email")
 		   .Must(BeAValidDomain).WithMessage("Not A Valid Email Domain")
 		   .Must(BeAValidEmail).WithMessage("Email contains invalid characters");
-
 		RuleFor(d => d.PhoneNumber)
 		   .Cascade(CascadeMode.Stop)
 		   .NotEmpty().WithMessage("Please enter your phone number")
@@ -27,34 +25,33 @@ sealed class WaitlistDataValidator : AbstractValidator<WaitlistSubmissionData>
 		   .Must(BeAValidPhoneNumber).WithMessage("Phone Number is invalid");
 	}
 
-	protected bool BeAValidName(string name)
+	bool BeAValidName(string name)
 	{
 		name = name.Replace(" ", "");
 		name = name.Replace("-", "");
-		return name.All(Char.IsLetter);
+		return name.All(char.IsLetter);
 	}
 
-	protected bool BeAValidEmail(string email)
+	bool BeAValidEmail(string email)
 	{
 		email = email.Replace("@", "");
 		email = email.Replace(".", "");
-		return email.All(Char.IsLetterOrDigit);
+		return email.All(char.IsLetterOrDigit);
 	}
 
-	protected bool BeAValidPhoneNumber(string phoneNumber)
+	bool BeAValidPhoneNumber(string phoneNumber)
 	{
 		phoneNumber = phoneNumber.Replace(" ", "");
 		phoneNumber = phoneNumber.Replace("-", "");
 		phoneNumber = phoneNumber.Replace("(", "");
 		phoneNumber = phoneNumber.Replace(")", "");
 		phoneNumber = phoneNumber.Replace("+", "");
-		return phoneNumber.All(Char.IsDigit);
+		return phoneNumber.All(char.IsDigit) && phoneNumber.Length <= 15;
 	}
 
 	//TODO: Check for valid domain extensions: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
-	protected bool BeAValidDomain(string email)
+	bool BeAValidDomain(string email)
 	{
 		return email.Contains('.');
 	}
-
 }
