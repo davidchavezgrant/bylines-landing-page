@@ -2,28 +2,37 @@
 @inject WaitlistDbContext db;
 <h3>SignUpForm</h3>
 
-<input placeholder="Email Address" @bind=this.form.Email/>
-<input placeholder="Name" @bind=this.form.Name/>
-<input placeholder="Phone Number" @bind=this.form.PhoneNumber/>
-<input type="checkbox" @bind=this.form.IsGroup/>
+<input placeholder="Email Address" @bind="form.Email"/>
+<input placeholder="Name" @bind="form.Name"/>
+<input placeholder="Phone Number" @bind="form.PhoneNumber"/>
+<input type="checkbox" @bind="form.IsGroup"/>
 <button @onclick="Submit">Submit</button>
-<h3>@this.statusMessage</h3>
-<h3>Id: @this.form.Id</h3>
+<h3>@statusMessage</h3>
+<h3>Id: @form.Id</h3>
 
 @code
 {
     WaitlistSubmissionData form = new();
     string statusMessage = "";
+
     async Task Submit()
     {
-        db.WaitlistSubmissions.Add(this.form);
-        var success = await db.SaveChangesAsync();
-
-        if (success is not 1) statusMessage = "Failure!";
-        if (success is 1)
+        var validator = new WaitlistDataValidator();
+        var result = validator.Validate(form);
+        if (!result.IsValid)
         {
-            statusMessage = "Success!";
-            this.form = new();
+            statusMessage = result.Errors?.FirstOrDefault()?.ErrorMessage ?? "An unknown error occured";
+        }
+        if (result.IsValid)
+        {
+            db.WaitlistSubmissions.Add(form);
+            var success = await db.SaveChangesAsync();
+            if (success is not 1) statusMessage = "Failed to save to database!";
+            if (success is 1)
+            {
+                statusMessage = "Success!";
+                form = new WaitlistSubmissionData();
+            }
         }
     }
 }
