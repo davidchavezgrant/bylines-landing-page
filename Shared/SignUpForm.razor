@@ -12,23 +12,21 @@
 @code
 {
     WaitlistSubmissionData form = new();
-    WaitlistDataValidator validator = new();
     string statusMessage = "";
     string statusColor = "red";
-    bool IsValid => validator.Validate(this.form).IsValid;
     bool AlreadyExists => db.WaitlistSubmissions.Any(d => d.Email == form.Email) || db.WaitlistSubmissions.Any(d => d.PhoneNumber == form.PhoneNumber);
     async Task Submit()
     {
-        if (!this.IsValid)
+        if (!this.form.IsValid)
         {
             statusColor = "red";
-            statusMessage = validator.Validate(this.form).Errors?.FirstOrDefault()?.ErrorMessage ?? "An unknown error occured";
+            statusMessage = this.form.Error ?? "An unknown error occured";
         }
         if (this.AlreadyExists)
         {
            ShowSuccess();
         }
-        if (this.IsValid && !this.AlreadyExists)
+        if (this.form.IsValid && !this.AlreadyExists)
         {
             db.WaitlistSubmissions.Add(form);
             var success = await db.SaveChangesAsync();

@@ -3,7 +3,7 @@ using System.Linq;
 using FluentValidation;
 namespace Bylines.LandingPage.Data;
 
-public class WaitlistDataValidator : AbstractValidator<WaitlistSubmissionData>
+sealed class WaitlistDataValidator : AbstractValidator<WaitlistSubmissionData>
 {
 	public WaitlistDataValidator()
 	{
