@@ -1,17 +1,17 @@
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Results;
 
 namespace Bylines.LandingPage.Data;
 
 public record WaitlistForm
 {
-	WaitlistFormValidator _validator = new();
-	public int            Id          { get; set; }
-	public string         Name        { get; set; }
-	public string         Email       { get; set; }
-	public string         PhoneNumber { get; set; }
-	public bool           IsGroup     { get; set; }
-	public bool           IsValid     => this._validator.Validate(this).IsValid;
-	public string? Error      => this._validator.Validate(this).Errors.FirstOrDefault()?.ErrorMessage;
+	private readonly IValidator<WaitlistForm> _validator = new WaitlistFormValidator();
+
+	public   int                   Id          { get; set; }
+	public   string                Name        { get; set; } = "";
+	public   string                Email       { get; set; } = "";
+	public   string                PhoneNumber { get; set; } = "";
+	public   bool                  IsGroup     { get; set; }
+	public   bool                  IsValid     => _validator.Validate(this).IsValid;
+	public   string?               Error       => _validator.Validate(this).Errors.FirstOrDefault()?.ErrorMessage;
 }

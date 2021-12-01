@@ -4,11 +4,4 @@ public class WaitlistDbContext : DbContext
 {
 	public WaitlistDbContext(DbContextOptions<WaitlistDbContext> options) : base(options) { }
 	public DbSet<WaitlistForm> WaitlistSubmissions { get; set; }
-
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
-	{
-		base.OnModelCreating(modelBuilder);
-
-		//modelBuilder.HasServiceTier("Basic");
-	}
 }

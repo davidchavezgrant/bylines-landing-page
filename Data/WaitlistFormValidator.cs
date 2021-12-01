@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Bylines.LandingPage.Data;
 
-sealed class WaitlistFormValidator : AbstractValidator<WaitlistForm>
+internal sealed class WaitlistFormValidator : AbstractValidator<WaitlistForm>
 {
 	public WaitlistFormValidator()
 	{
@@ -22,7 +22,7 @@ sealed class WaitlistFormValidator : AbstractValidator<WaitlistForm>
 		   .NotEmpty().WithMessage("Please enter your phone number")
 		   .MinimumLength(10).WithMessage("Phone Number is too short")
 		   .MaximumLength(25).WithMessage("Phone Number is too long")
-		   .Must(BeAValidPhoneNumber).WithMessage("Phone Number is invalid");
+		   .Must(BeAValidPhoneNumber).WithMessage("			Phone Number is invalid");
 	}
 
 	bool BeAValidName(string name)
@@ -41,11 +41,12 @@ sealed class WaitlistFormValidator : AbstractValidator<WaitlistForm>
 
 	bool BeAValidPhoneNumber(string phoneNumber)
 	{
-		phoneNumber = phoneNumber.Replace(" ", "");
-		phoneNumber = phoneNumber.Replace("-", "");
-		phoneNumber = phoneNumber.Replace("(", "");
-		phoneNumber = phoneNumber.Replace(")", "");
-		phoneNumber = phoneNumber.Replace("+", "");
+		phoneNumber = phoneNumber.Replace(" ", "")
+								 .Replace("-", "")
+								 .Replace("(", "")
+								 .Replace(")", "")
+								 .Replace("+", "");
+
 		return phoneNumber.All(char.IsDigit) && phoneNumber.Length <= 15;
 	}
 
