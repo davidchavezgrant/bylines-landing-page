@@ -1,0 +1,14 @@
+<div class="message-group">
+    <p class="message @_messageStyleCss aos-init" data-aos="@_animationCss" data-aos-once="true" data-aos-duration="300" data-aos-offset="150">
+        <span>
+            @ViewModel.Text
+        </span>
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public MessageGroupViewModel ViewModel { get; set; }
+    private string _animationCss => this.ViewModel.IsFromMe? "fade-up-left" : "fade-up-right";
+    private string _messageStyleCss => this.ViewModel.IsFromMe? "message-right" : "message-left";
+}

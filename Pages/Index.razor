@@ -1,6 +1,15 @@
 ﻿@page "/"
 
-<MessageThread/>
+<MessageThread MessageGroupViewModels=@this.MessageGroups/>
 
 <SignUpForm/>
 
+@code
+{
+    List<MessageGroupViewModel> MessageGroups = new();
+    protected override void OnInitialized()
+    {
+        this.MessageGroups.Add(new MessageGroupViewModel("Hello from me!", true));
+        this.MessageGroups.Add(new MessageGroupViewModel("Hello to you!", false));
+    }
+}
